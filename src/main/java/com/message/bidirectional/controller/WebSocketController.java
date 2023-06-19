@@ -15,6 +15,9 @@ import java.util.Date;
 public class WebSocketController {
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
+    /**MessageMapping indica il mapping del metodo,
+     *sendTo indica l'indirizzo su cui verrà inviata la risposta
+     * */
     public OutputMessage send(Message message){
         String time = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss").format(new Date());
         return new OutputMessage(message.getFrom(), message.getMessage(), time);
