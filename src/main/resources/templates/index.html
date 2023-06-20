@@ -30,6 +30,10 @@
 <script type="text/javascript">
     var stompClient = null;
 
+    var source = new EventSource("/web/stream-sse-mvc");
+    source.addEventListener('message',event =>{
+        console.log(event.data)
+    })
     function setConnected(connected) {
         document.getElementById('connect').disabled = connected;
         document.getElementById('disconnect').disabled = !connected;
