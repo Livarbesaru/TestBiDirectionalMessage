@@ -20,6 +20,9 @@
         <button id="sendMessage" onclick="sendMessage();">Send</button>
         <p id="response"></p>
     </div>
+    <input id="idRequest" type="text">
+    <input id="idOperator" type="text">
+    <button type="button" onclick="sendNotification()">notify</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
@@ -43,8 +46,9 @@
             console.log('Connected: ' + frame);
             stompClient.subscribe('/topic/messages', function(messageOutput) {
                 showMessageOutput(JSON.parse(messageOutput.body));
-                console.log('message')
-                console.log(messageOutput)
+            });
+            stompClient.subscribe('/topic/response/12', function(messageOutput) {
+                console.log(messageOutput.body)
             });
         });
     }
@@ -70,6 +74,12 @@
         p.appendChild(document.createTextNode(messageOutput.from + ": "
             + messageOutput.message + " (" + messageOutput.date + ")"));
         response.appendChild(p);
+    }
+
+    function sendNotification(){
+        var idReq = document.getElementById('idRequest').value;
+        var idOper = document.getElementById('idOperator').value;
+        stompClient.send("/app/chat/"+idReq+"/"+idOper, {});
     }
 </script>
 </body>
