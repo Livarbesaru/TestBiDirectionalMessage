@@ -35,6 +35,7 @@ public class WebController {
                             .id(String.valueOf(i))
                             .name("message");
                     emitter.send(event);
+                    Thread.sleep(1000);
                 }
             } catch (Exception ex) {
                 emitter.completeWithError(ex);

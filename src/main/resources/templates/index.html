@@ -29,6 +29,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script type="text/javascript">
     var stompClient = null;
+    var sessionID;
 
     var source = new EventSource("/web/stream-sse-mvc");
     source.addEventListener('message',event =>{
@@ -48,11 +49,23 @@
         stompClient.connect({}, function(frame) {
             setConnected(true);
             console.log('Connected: ' + frame);
+
+            var url = stompClient.ws._transport.url;
+            url = url.slice(url.indexOf("/ws")+"/ws/".length, url.indexOf("/websocket"))
+            url = url.replace("/websocket", "");
+            url = url.replace(/^[0-9]+\//, "");
+            sessionID = url;
+            console.log("Your current session is: " + url);
+            var from = document.getElementById('from').value;
+
             stompClient.subscribe('/topic/messages', function(messageOutput) {
                 showMessageOutput(JSON.parse(messageOutput.body));
             });
             stompClient.subscribe('/topic/response/12', function(messageOutput) {
                 console.log(messageOutput.body)
+            });
+            stompClient.subscribe('/user/'+from+'/specific-user/'+sessionId,(message)=>{
+                console.log(message)
             });
         });
     }
@@ -69,6 +82,9 @@
         var from = document.getElementById('from').value;
         var text = document.getElementById('text').value;
         stompClient.send("/app/chat", {},
+            JSON.stringify({'from':from, 'message':text}));
+
+        stompClient.send("/app/sngl-chat",{},
             JSON.stringify({'from':from, 'message':text}));
     }
 
