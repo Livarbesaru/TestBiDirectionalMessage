@@ -1,0 +1,16 @@
+{
+  "realm": "anmil-realm",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": true,
+  "requiredCredentials": [ "password" ],
+  "clients": [
+    {
+      "clientId": "anmil-grant-access",
+      "enabled": true,
+      "bearerOnly": true,
+      "protocol": "openid-connect",
+      "secret": "prova-secret"
+    }
+  ]
+}

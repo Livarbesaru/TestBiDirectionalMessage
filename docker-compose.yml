@@ -1,5 +1,5 @@
 services:
-  db_postgres:
+  postgres:
     image: postgres:latest
     ports:
       - 5432:5432
@@ -7,19 +7,22 @@ services:
       POSTGRES_USER: master
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: ticketing
-  keycloack:
+  keycloak:
     image: quay.io/keycloak/keycloak:21.1.1
     ports:
       - 8080:8080
+    volumes:
+      - ./docker/keycloak/imports:/opt/keycloak/data/import
+    command: start-dev --import-realm
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: postgres
+      DB_PORT: 5432
       DB_DATABASE: ticketing
       DB_USER: master
       DB_SCHEMA: public
       DB_PASSWORD: pass
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-    command: start-dev
-    volumes:
-      - ./realm-export.json:/tmp/realm-export.json
+    depends_on:
+      - postgres

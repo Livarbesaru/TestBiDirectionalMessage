@@ -1,0 +1,71 @@
+{
+  "id": "my-realm",
+  "realm": "my-realm",
+  "enabled": true,
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": false,
+  "rememberMe": true,
+  "verifyEmail": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": true,
+  "bruteForceProtected": false,
+  "permanentLockout": false,
+  "maxFailureWaitSeconds": 900,
+  "minimumQuickLoginWaitSeconds": 60,
+  "waitIncrementSeconds": 60,
+  "quickLoginCheckMilliSeconds": 1000,
+  "maxDeltaTimeSeconds": 43200,
+  "failureFactor": 30,
+  "defaultRoles": [
+    "offline_access",
+    "uma_authorization"
+  ],
+  "defaultGroups": [],
+  "requiredCredentials": [
+    {
+      "type": "password",
+      "value": null,
+      "temporary": false
+    }
+  ],
+  "smtpServer": {},
+  "browserSecurityHeaders": {},
+  "eventsListeners": [],
+  "identityProviders": [],
+  "authenticatorConfigurations": [],
+  "clientScopes": [],
+  "clients": [
+    {
+      "id": "my-client",
+      "clientId": "my-client",
+      "protocol": "openid-connect",
+      "secret": "my-secret",
+      "redirectUris": [
+        "/my-client/*"
+      ],
+      "webOrigins": [],
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "frontchannelLogout": false,
+      "protocolMappers": [
+        {
+          "name": "user-attribute",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": true,
+            "user.attribute": "my-attribute",
+            "id.token.claim": true,
+            "access.token.claim": true
+          }
+        }
+      ]
+    }
+  ]
+}
