@@ -1,10 +1,10 @@
 package com.message.bidirectional.config;
 
-import com.message.bidirectional.service.JwtDecoderService;
+import com.message.bidirectional.util.JwtCustomAuthenticationConverter;
+import com.message.bidirectional.util.JwtCustomDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,10 +16,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class WebSecurity {
 
-    private JwtDecoderService jwtDecoderService;
+    private JwtCustomDecoder jwtCustomDecoder;
+    private JwtCustomAuthenticationConverter jwtCustomAuthenticationConverter;
     @Autowired
-    public WebSecurity(JwtDecoderService jwtDecoderService){
-        this.jwtDecoderService = jwtDecoderService;
+    public WebSecurity(JwtCustomDecoder jwtCustomDecoder, JwtCustomAuthenticationConverter jwtCustomAuthenticationConverter){
+        this.jwtCustomDecoder = jwtCustomDecoder;
+        this.jwtCustomAuthenticationConverter = jwtCustomAuthenticationConverter;
     }
 
     @Bean
@@ -31,7 +33,9 @@ public class WebSecurity {
                 });
         http.
                 oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoderService))
+                        oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtCustomDecoder)
+                                .jwtAuthenticationConverter(jwtCustomAuthenticationConverter)
+                        )
                 );
         return http.build();
     }
