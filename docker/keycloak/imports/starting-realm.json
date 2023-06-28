@@ -8,7 +8,7 @@
     {
       "clientId": "anmil-grant-access",
       "enabled": true,
-      "bearerOnly": true,
+      "bearerOnly": false,
       "protocol": "openid-connect",
       "secret": "prova-secret"
     }

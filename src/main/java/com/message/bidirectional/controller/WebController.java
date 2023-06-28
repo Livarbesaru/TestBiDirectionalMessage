@@ -1,5 +1,6 @@
 package com.message.bidirectional.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ public class WebController {
      * mentre ExecutorService ci permetter di creare un flusso asincrono
      * */
     @GetMapping("/stream-sse-mvc")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public SseEmitter streamSseMvc() {
         SseEmitter emitter = new SseEmitter();
         ExecutorService sseMvcExecutor = Executors.newSingleThreadExecutor();
