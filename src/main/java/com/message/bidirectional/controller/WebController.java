@@ -1,5 +1,4 @@
 package com.message.bidirectional.controller;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +12,11 @@ import java.util.concurrent.Executors;
 @Controller
 @RequestMapping("/web")
 public class WebController {
+
     @GetMapping("/home")
     public String home(){
         return "index";
     }
-
     /**
      * Restituisce un flusso dati con nome .name(),
      * ed il flusso dati sarà in .data()

@@ -29,7 +29,7 @@ public class WebSecurity {
         http.
                 csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authz)->{
-                    authz.anyRequest().authenticated();
+                    authz.requestMatchers("/login/oauth2/**").permitAll().anyRequest().authenticated();
                 });
         http.
                 oauth2ResourceServer(oauth2 ->
@@ -37,6 +37,9 @@ public class WebSecurity {
                                 .jwtAuthenticationConverter(jwtCustomAuthenticationConverter)
                         )
                 );
+        http.
+                oauth2Login(oauthLogin2 -> oauthLogin2.loginPage("http://localhost:8080/login/oauth2/code/anmil-grant-access"))
+                .logout(logoutAuth2 -> logoutAuth2.logoutUrl("dio"));
         return http.build();
     }
 }
