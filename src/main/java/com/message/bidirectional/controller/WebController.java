@@ -1,5 +1,5 @@
 package com.message.bidirectional.controller;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,14 +10,16 @@ import java.time.LocalTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Slf4j
 @Controller
 @RequestMapping("/web")
 public class WebController {
+
     @GetMapping("/home")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String home(){
         return "index";
     }
-
     /**
      * Restituisce un flusso dati con nome .name(),
      * ed il flusso dati sarà in .data()

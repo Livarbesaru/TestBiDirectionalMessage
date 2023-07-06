@@ -1,0 +1,32 @@
+#POSTGRESQL CONFIGURATIONS
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ticketing
+    username: master
+    password: pass
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            authorization-grant-type: authorization_code
+            client-id: anmil-grant-access
+            client-secret: prova-secret
+            provider: keycloak
+            scope: openid,profile,email,offline_access
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/${keycloak.realm.name}
+            token-uri: http://localhost:8080/realms/${keycloak.realm.name}/protocol/openid-connect/token
+            user-info-uri: http://localhost:8080/realms/${keycloak.realm.name}/protocol/openid-connect/userinfo
+            jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+            user-name-attribute: preferred_username
+
+#SERVER CONFIGURATION
+server:
+  port: 8081
+
+#KEYCLOACK CONFIGURATIONS
+keycloak:
+  realm:
+    name: anmil-realm
