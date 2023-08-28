@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username">
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password">
+
+        <label for="firstName">Firstname</label>
+        <input type="text" id="firstName" name="firstName">
+
+        <label for="lastName">Lastname</label>
+        <input type="text" id="lastName" name="lastName">
+
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email">
+        <input type="button" value="register" id="register">
+    </form>
+    <script type="text/javascript">
+        document.getElementById("register").addEventListener("click",()=>{
+            let username = document.querySelector("[name=username]").value
+            let password = document.querySelector("[name=password]").value
+            let email = document.querySelector("[name=email]").value
+            let firstName = document.querySelector("[name=firstName]").value
+            let lastName = document.querySelector("[name=lastName]").value
+            fetch(`http://localhost:8081/web/user/add?username=${username}&password=${password}&email=${email}&firstName=${firstName}&lastName=${lastName}`,{
+                method: "POST",
+                mode: "cors"
+            });
+        })
+    </script>
+</body>
+</html>

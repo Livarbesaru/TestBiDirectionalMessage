@@ -2,6 +2,8 @@ package com.message.bidirectional.config;
 
 import com.message.bidirectional.util.JwtCustomAuthenticationConverter;
 import com.message.bidirectional.util.JwtCustomDecoder;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.representations.idm.CredentialRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -58,8 +60,12 @@ public class WebSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.
                 csrf(Customizer.withDefaults())
-                .cors(Customizer.withDefaults())
-                .authorizeHttpRequests((authz)-> authz.anyRequest().authenticated());
+                .authorizeHttpRequests((authz)-> authz.requestMatchers("/web/user/add")
+                        .permitAll()
+                        .requestMatchers("/web/user/**")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated());
         http.
                 oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwtConfigurer ->

@@ -1,9 +1,10 @@
 package com.message.bidirectional.controller;
+import com.message.bidirectional.util.KeycloakService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.time.LocalTime;
@@ -15,10 +16,28 @@ import java.util.concurrent.Executors;
 @RequestMapping("/web")
 public class WebController {
 
+    private KeycloakService keycloakService;
+    @Autowired
+    public WebController(KeycloakService keycloakService){
+        this.keycloakService=keycloakService;
+    }
+
     @GetMapping("/home")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String home(){
         return "index";
+    }
+    @GetMapping("/user/addpage")
+    public String addUser(){
+        return "addUser";
+    }
+    @PostMapping("/user/add")
+    public void add(@RequestParam("username") String username,
+                    @RequestParam("password") String password,
+                    @RequestParam("email") String email,
+                    @RequestParam("firstName") String firstName,
+                    @RequestParam("lastName") String lastName){
+        keycloakService.addUser(username,email,firstName,lastName,password);
     }
     /**
      * Restituisce un flusso dati con nome .name(),
