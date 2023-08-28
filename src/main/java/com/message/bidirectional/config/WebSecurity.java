@@ -75,25 +75,6 @@ public class WebSecurity {
                 .authenticationProvider(authenticationProvider());
         return http.build();
     }
-
-    @Bean
-    public ClientRegistrationRepository clientRegistrationRepository(){
-        return new InMemoryClientRegistrationRepository(
-                ClientRegistration
-                        .withRegistrationId("keycloak")
-                        .clientId(clientId)
-                        .clientSecret(clientSecret)
-                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                        .scope(OidcScopes.OPENID)
-                        .scope(OidcScopes.PROFILE)
-                        .authorizationUri("http://localhost:8080/realms/anmil-realm/protocol/openid-connect/auth")
-                        .tokenUri("http://localhost:8080/realms/anmil-realm/protocol/openid-connect/token")
-                        .redirectUri("http://localhost:8081/web/home")
-                        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                        .build()
-        );
-    }
-
     @Bean
     public GrantedAuthoritiesMapper userAuthoritiesMapperForKeycloak() {
         return authorities -> {
