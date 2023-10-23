@@ -2,32 +2,20 @@ package com.message.bidirectional.config;
 
 import com.message.bidirectional.util.JwtCustomAuthenticationConverter;
 import com.message.bidirectional.util.JwtCustomDecoder;
-import org.keycloak.admin.client.resource.UserResource;
-import org.keycloak.representations.idm.CredentialRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
@@ -59,13 +47,11 @@ public class WebSecurity {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.
-                csrf(Customizer.withDefaults())
-                .authorizeHttpRequests((authz)-> authz.requestMatchers("/web/user/add")
-                        .permitAll()
-                        .requestMatchers("/web/user/**")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated());
+                csrf(csrf->csrf.disable())
+                .authorizeHttpRequests((authz)->
+                        authz.anyRequest()
+                        .authenticated()
+                );
         http.
                 oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwtConfigurer ->
@@ -92,15 +78,19 @@ public class WebSecurity {
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
             GrantedAuthority authority = authorities.iterator().next();
             boolean isOidc = authority instanceof OidcUserAuthority;
+            Collection<String> roles = new ArrayList<>();
 
             if (isOidc) {
                 OidcUserAuthority oidcUserAuthority = (OidcUserAuthority) authority;
                 OidcUserInfo userInfo = oidcUserAuthority.getUserInfo();
+                Map<String, Object> userAttributes = oidcUserAuthority.getAttributes();
 
                 if (userInfo.hasClaim("realm_access")) {
                     Map<String,Object> realmAccess = userInfo.getClaimAsMap("realm_access");
-                    Collection<String> roles = (Collection<String>)realmAccess.get("roles");
-                    mappedAuthorities.addAll(generateAuthoritiesFromClaim(roles));
+                    roles = new ArrayList<>((Collection<String>)realmAccess.get("roles"));
+                }else{
+                    Map<String,Object> realmAccess = (Map<String, Object>) userAttributes.get("realm_access");
+                    roles = new ArrayList<>((Collection<String>)realmAccess.get("roles"));
                 }
             } else {
                 OAuth2UserAuthority oauth2UserAuthority = (OAuth2UserAuthority) authority;
@@ -108,11 +98,10 @@ public class WebSecurity {
 
                 if (userAttributes.containsKey("realm_access")) {
                     Map<String,Object> realmAccess =  (Map<String,Object>) userAttributes.get("realm_access");
-                    Collection<String> roles =  (Collection<String>) realmAccess.get("roles");
-                    mappedAuthorities.addAll(generateAuthoritiesFromClaim(roles));
+                    roles =  new ArrayList<>((Collection<String>) realmAccess.get("roles"));
                 }
             }
-
+            mappedAuthorities.addAll(generateAuthoritiesFromClaim(roles));
             return mappedAuthorities;
         };
     }
