@@ -1,5 +1,7 @@
 package com.message.bidirectional.util;
 
+import com.nimbusds.oauth2.sdk.GrantType;
+import org.keycloak.OAuth2Constants;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,7 @@ import java.util.List;
 
 @Service
 public class KeycloakService {
-    @Value("${spring.security.oauth2.client.provider.keycloak.issuer-uri}/auth")
+    @Value("${keycloak.server}")
     private String serverUrl;
     @Value("${keycloak.realm.name}")
     private String realm;
@@ -27,6 +29,7 @@ public class KeycloakService {
                 .realm(realm)
                 .clientId(clientId)
                 .clientSecret(clientSecret)
+                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                 .build();
         RealmResource realmResource = keycloak.realm(realm);
         UsersResource usersResource = realmResource.users();

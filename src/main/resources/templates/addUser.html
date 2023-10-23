@@ -5,6 +5,7 @@
     <title>Title</title>
 </head>
 <body>
+    <div id="react"></div>
     <form>
         <label for="username">Username</label>
         <input type="text" id="username" name="username">
@@ -22,6 +23,15 @@
         <input type="text" id="email" name="email">
         <input type="button" value="register" id="register">
     </form>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/jsx">
+        function Prova(){
+            return <h1>CIAO REACT</h1>
+        }
+        ReactDOM.render(<Prova />, document.getElementById("react"))
+    </script>
     <script type="text/javascript">
         document.getElementById("register").addEventListener("click",()=>{
             let username = document.querySelector("[name=username]").value
@@ -29,9 +39,13 @@
             let email = document.querySelector("[name=email]").value
             let firstName = document.querySelector("[name=firstName]").value
             let lastName = document.querySelector("[name=lastName]").value
-            fetch(`http://localhost:8081/web/user/add?username=${username}&password=${password}&email=${email}&firstName=${firstName}&lastName=${lastName}`,{
+            let url = `http://localhost:8081/web/user/add?username=${username}&password=${password}&email=${email}&firstName=${firstName}&lastName=${lastName}`;
+            fetch(url,{
                 method: "POST",
-                mode: "cors"
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                }
             });
         })
     </script>

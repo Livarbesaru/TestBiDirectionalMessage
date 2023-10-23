@@ -28,10 +28,12 @@ public class WebController {
         return "index";
     }
     @GetMapping("/user/addpage")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String addUser(){
         return "addUser";
     }
     @PostMapping("/user/add")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void add(@RequestParam("username") String username,
                     @RequestParam("password") String password,
                     @RequestParam("email") String email,

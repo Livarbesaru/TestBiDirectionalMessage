@@ -1,7 +1,15 @@
 #KEYCLOACK CONFIGURATIONS
 keycloak:
+  server: http://localhost:8080
   realm:
     name: anmil-realm
+
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
 
 #POSTGRESQL CONFIGURATIONS
 spring:

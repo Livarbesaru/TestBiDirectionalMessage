@@ -7,6 +7,8 @@ services:
       POSTGRES_USER: master
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: ticketing
+    networks:
+      - db
   keycloak:
     image: quay.io/keycloak/keycloak:21.1.1
     ports:
@@ -26,3 +28,8 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
     depends_on:
       - postgres
+    networks:
+      - db
+networks:
+  db:
+    name: db

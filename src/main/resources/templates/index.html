@@ -64,8 +64,8 @@
             stompClient.subscribe('/topic/response/12', function(messageOutput) {
                 console.log(messageOutput.body)
             });
-            stompClient.subscribe('/user/'+from+'/specific-user/'+sessionId,(message)=>{
-                console.log(message)
+            stompClient.subscribe('/user/'+from+'/specific-user/'+sessionID,(message)=>{
+                console.log("private ",message)
             });
         });
     }
